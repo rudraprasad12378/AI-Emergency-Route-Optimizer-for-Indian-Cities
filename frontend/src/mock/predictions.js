@@ -1,0 +1,32 @@
+export const mockPredictions = [
+  {
+    id: 'pred-001',
+    corridorName: 'NH16 Rasulgarh to Jayadev Vihar',
+    predictedPeakHour: '18:30 - 20:45',
+    riskLevel: 'high',
+    projectedDelayMinutes: 28,
+    confidence: 89,
+    recommendation: 'Pre-position 2 reserve ambulances at Saheed Nagar hub; divert AIIMS-bound transits via Janpath / Siripur.',
+    factors: ['Office evening peak', 'Rain forecast (65%)', 'Ongoing metro pier construction'],
+  },
+  {
+    id: 'pred-002',
+    corridorName: 'Khandagiri - AIIMS Sijua Road',
+    predictedPeakHour: '09:00 - 11:30',
+    riskLevel: 'medium',
+    projectedDelayMinutes: 12,
+    confidence: 84,
+    recommendation: 'Enable Green Corridor automated priority on 4 traffic signals during peak patient arrival window.',
+    factors: ['Hospital outpatient influx', 'Narrow service lane bottlenecks'],
+  },
+  {
+    id: 'pred-003',
+    corridorName: 'Old Town Heritage Ring Road',
+    predictedPeakHour: '19:00 - 22:00',
+    riskLevel: 'high',
+    projectedDelayMinutes: 24,
+    confidence: 93,
+    recommendation: 'Avoid for heavy fire tenders. Deploy compact first-responder electric two-wheelers and mini-ambulances.',
+    factors: ['Weekly temple festival', 'Encroachments in narrow alleyways'],
+  },
+];

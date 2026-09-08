@@ -1,0 +1,70 @@
+@keyframes beacon {
+  0%, 100% {
+    box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.4);
+  }
+  50% {
+    box-shadow: 0 0 0 8px rgba(239, 68, 68, 0);
+  }
+}
+
+@keyframes markerPulse {
+  0% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(2.5);
+    opacity: 0;
+  }
+}
+
+@keyframes routeDash {
+  to {
+    stroke-dashoffset: -20;
+  }
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+@keyframes progressBar {
+  0% {
+    width: 0%;
+  }
+  100% {
+    width: var(--progress, 0%);
+  }
+}
+
+.animate-beacon {
+  animation: beacon 2s ease-in-out infinite;
+}
+
+.animate-marker-pulse {
+  animation: markerPulse 1.5s ease-out infinite;
+}
+
+.animate-route-dash {
+  animation: routeDash 1s linear infinite;
+}
+
+.animate-shimmer {
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(255, 255, 255, 0.05) 50%,
+    transparent 100%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.5s ease-in-out infinite;
+}
+
+.animate-progress {
+  animation: progressBar 1s ease-out forwards;
+}

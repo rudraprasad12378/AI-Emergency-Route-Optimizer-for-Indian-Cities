@@ -1,0 +1,38 @@
+export const mockNotifications = [
+  {
+    id: 'notif-001',
+    type: 'critical',
+    title: 'Severe Bottleneck Alert',
+    message: 'Waterlogging at Iskcon Flyover underpass is slowing AMB-101. Dynamic reroute suggested via Siripur.',
+    timestamp: '2026-09-08T21:49:12Z',
+    read: false,
+    link: '/emergency/emg-001',
+  },
+  {
+    id: 'notif-002',
+    type: 'success',
+    title: 'Green Corridor Activated',
+    message: '8 Smart Traffic Signals synchronized along Master Canteen to AIIMS corridor.',
+    timestamp: '2026-09-08T21:45:00Z',
+    read: false,
+    link: '/routes/route-001',
+  },
+  {
+    id: 'notif-003',
+    type: 'warning',
+    title: 'VIP Movement Alert',
+    message: 'Sachivalaya Marg closed for VVIP convoy until 22:15. Avoid corridor for all new dispatches.',
+    timestamp: '2026-09-08T21:30:00Z',
+    read: true,
+    link: '/incidents',
+  },
+  {
+    id: 'notif-004',
+    type: 'info',
+    title: 'Shift Handover & Unit Readiness',
+    message: 'Night shift operations active. 14 Ambulances and 7 Fire tenders on standby.',
+    timestamp: '2026-09-08T20:00:00Z',
+    read: true,
+    link: '/vehicles',
+  },
+];
