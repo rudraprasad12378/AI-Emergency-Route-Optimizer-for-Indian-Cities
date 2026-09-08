@@ -27,7 +27,7 @@ import { Card } from '../../components/ui/Card';
 
 export const ControlCenter = () => {
   const navigate = useNavigate();
-  const { emergencies, activeEmergency, setActiveEmergencyId, toggleGreenCorridor } = useEmergency();
+  const { emergencies, activeEmergency, setActiveEmergencyId, toggleGreenCorridor, assignVehicle } = useEmergency();
   const { incidents } = useIncidents();
   const { routes, selectedRoute, calculateAlternativeRoute, isRerouting } = useRoute();
   const { vehicles } = useVehicleTracking();
@@ -150,6 +150,7 @@ export const ControlCenter = () => {
                 emergency={activeEmergency}
                 onToggleGreenCorridor={() => toggleGreenCorridor(activeEmergency.id)}
                 onReroute={() => setIsRerouteOpen(true)}
+                onAssignVehicle={(emgId, vehId, callSign) => assignVehicle(emgId, vehId, callSign)}
               />
             </div>
           )}

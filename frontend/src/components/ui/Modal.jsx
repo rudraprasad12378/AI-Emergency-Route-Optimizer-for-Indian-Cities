@@ -1,4 +1,5 @@
-import React, { useEffect, useRef, useCallback } from 'react';
+import React, { useEffect, useRef, useCallback, useState } from 'react';
+import ReactDOM from 'react-dom';
 import { X } from 'lucide-react';
 
 const sizeClasses = {
@@ -17,6 +18,11 @@ export const Modal = ({
   showClose = true,
 }) => {
   const overlayRef = useRef(null);
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   const handleKeyDown = useCallback(
     (e) => {
@@ -36,12 +42,12 @@ export const Modal = ({
     };
   }, [isOpen, handleKeyDown]);
 
-  if (!isOpen) return null;
+  if (!isOpen || !mounted) return null;
 
-  return (
+  const modalContent = (
     <div
       ref={overlayRef}
-      className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm animate-fade-in"
+      className="fixed inset-0 z-[9999] flex items-center justify-center p-4 bg-black/80 backdrop-blur-md animate-fade-in pointer-events-auto"
       onClick={(e) => {
         if (e.target === overlayRef.current) onClose();
       }}
@@ -51,9 +57,9 @@ export const Modal = ({
     >
       <div
         className={`
-          w-full ${sizeClasses[size] || sizeClasses.md}
-          bg-slate-900 border border-slate-800 rounded-2xl shadow-2xl
-          max-h-[90vh] overflow-y-auto
+          relative z-[10000] w-full ${sizeClasses[size] || sizeClasses.md}
+          bg-slate-900 border border-slate-700/80 rounded-2xl shadow-2xl
+          max-h-[90vh] overflow-y-auto pointer-events-auto
         `}
       >
         {(title || showClose) && (
@@ -74,6 +80,8 @@ export const Modal = ({
       </div>
     </div>
   );
+
+  return ReactDOM.createPortal(modalContent, document.body);
 };
 
 export default Modal;

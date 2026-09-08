@@ -38,7 +38,7 @@ export const CityMap = ({
   const { sensors, riskZones } = useTraffic();
 
   return (
-    <div className={`relative w-full h-full min-h-[400px] overflow-hidden rounded-2xl border border-slate-800 bg-slate-950 shadow-2xl ${className}`}>
+    <div className={`relative w-full h-full min-h-[400px] overflow-hidden rounded-2xl border border-slate-800 bg-slate-950 shadow-2xl isolate z-0 ${className}`}>
       <MapContainer
         center={center}
         zoom={zoom}

@@ -6,7 +6,8 @@ export const mockUsers = [
     role: 'admin',
     phone: '+91 98765 43210',
     station: 'Central Command',
-    createdAt: '2025-01-15T10:00:00Z',
+    department: 'State Emergency Administration',
+    avatar: 'RK',
   },
   {
     id: 'user-002',
@@ -15,21 +16,43 @@ export const mockUsers = [
     role: 'dispatcher',
     phone: '+91 98765 43211',
     station: 'Bhubaneswar Control Center',
-    createdAt: '2025-02-01T10:00:00Z',
+    department: '108 Dispatch Command',
+    avatar: 'PP',
   },
   {
     id: 'user-003',
-    name: 'Amit Singh',
-    email: 'operator@ero.gov.in',
-    role: 'operator',
-    phone: '+91 98765 43212',
-    station: 'Saheed Nagar Station',
-    createdAt: '2025-03-15T10:00:00Z',
+    name: 'Subhash Jena',
+    email: 'driver@ero.gov.in',
+    role: 'driver',
+    phone: '+91 94370 11223',
+    vehicleId: 'veh-001',
+    vehicleCallSign: 'AMB-101',
+    station: 'Capital Emergency Hub',
+    department: 'Rapid Response Fleet',
+    avatar: 'SJ',
+  },
+  {
+    id: 'user-004',
+    name: 'Ramesh Mohanty',
+    email: 'citizen@gmail.com',
+    role: 'citizen',
+    phone: '+91 98610 23411',
+    location: 'Master Canteen Square, Bhubaneswar',
+    department: 'Citizen User',
+    avatar: 'RM',
+  },
+  {
+    id: 'user-005',
+    name: 'Dr. Anuradha Mishra',
+    email: 'hospital@aiims.edu.in',
+    role: 'hospital',
+    phone: '+91 674 2476789',
+    hospitalId: 'hosp-001',
+    hospitalName: 'AIIMS Bhubaneswar Emergency Trauma Center',
+    department: 'Emergency & Critical Care',
+    avatar: 'AM',
   },
 ];
 
-// Default user for mock login
-export const DEFAULT_USER = mockUsers[0];
-
-// Simple password for demo (not real auth)
-export const DEMO_PASSWORD = 'admin123';
+export const DEFAULT_USER = mockUsers[1]; // Default to Dispatcher
+export const DEMO_PASSWORD = 'emergency2026';

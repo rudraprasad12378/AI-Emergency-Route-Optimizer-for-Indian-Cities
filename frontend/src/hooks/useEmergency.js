@@ -4,7 +4,7 @@ export const useEmergency = () => {
   const store = useEmergencyStore();
 
   const filteredEmergencies = store.emergencies.filter((e) => {
-    if (store.filterStatus !== 'all' && e.status !== store.filterStatus) return false;
+    if (store.filterStatus !== 'all' && e.status.toUpperCase() !== store.filterStatus.toUpperCase()) return false;
     if (store.filterSeverity !== 'all' && e.severity !== store.filterSeverity) return false;
     return true;
   });
@@ -22,6 +22,14 @@ export const useEmergency = () => {
     filterSeverity: store.filterSeverity,
     setFilterSeverity: store.setFilterSeverity,
     createEmergency: store.createEmergency,
+    triageEmergency: store.triageEmergency,
+    assignVehicle: store.assignVehicle,
+    acceptMission: store.acceptMission,
+    startJourney: store.startJourney,
+    triggerReroute: store.triggerReroute,
+    completeEmergency: store.completeEmergency,
+    startSimulation: store.startSimulation,
+    stopSimulation: store.stopSimulation,
     updateEmergencyStatus: store.updateEmergencyStatus,
     toggleGreenCorridor: store.toggleGreenCorridor,
     isLoading: store.isLoading,

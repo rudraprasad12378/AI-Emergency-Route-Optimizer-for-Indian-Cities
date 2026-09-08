@@ -1,0 +1,50 @@
+0 verbose cli C:\Program Files\Microsoft Visual Studio\2022\Professional\MSBuild\Microsoft\VisualStudio\NodeJs\node.exe C:\Program Files\Microsoft Visual Studio\2022\Professional\MSBuild\Microsoft\VisualStudio\NodeJs\node_modules\npm\bin\npm-cli.js
+1 info using npm@10.5.2
+2 info using node@v20.13.1
+3 timing npm:load:whichnode Completed in 1ms
+4 timing config:load:defaults Completed in 1ms
+5 timing config:load:file:C:\Program Files\Microsoft Visual Studio\2022\Professional\MSBuild\Microsoft\VisualStudio\NodeJs\node_modules\npm\npmrc Completed in 0ms
+6 timing config:load:builtin Completed in 0ms
+7 timing config:load:cli Completed in 2ms
+8 timing config:load:env Completed in 0ms
+9 timing config:load:file:C:\AI Emergency Route Optimizer for Indian Cities\frontend\.npmrc Completed in 0ms
+10 timing config:load:project Completed in 1ms
+11 verbose config error loading user config Error: EPERM: operation not permitted, open 'C:\Users\rudra\.npmrc'
+11 verbose config     at async open (node:internal/fs/promises:636:25)
+11 verbose config     at async readFile (node:internal/fs/promises:1246:14)
+11 verbose config     at async #loadFile (C:\Program Files\Microsoft Visual Studio\2022\Professional\MSBuild\Microsoft\VisualStudio\NodeJs\node_modules\npm\node_modules\@npmcli\config\lib\index.js:606:5)
+11 verbose config     at async Config.load (C:\Program Files\Microsoft Visual Studio\2022\Professional\MSBuild\Microsoft\VisualStudio\NodeJs\node_modules\npm\node_modules\@npmcli\config\lib\index.js:261:5)
+11 verbose config     at async #load (C:\Program Files\Microsoft Visual Studio\2022\Professional\MSBuild\Microsoft\VisualStudio\NodeJs\node_modules\npm\lib\npm.js:195:5)
+11 verbose config     at async module.exports (C:\Program Files\Microsoft Visual Studio\2022\Professional\MSBuild\Microsoft\VisualStudio\NodeJs\node_modules\npm\lib\cli-entry.js:40:5) {
+11 verbose config   errno: -4048,
+11 verbose config   code: 'EPERM',
+11 verbose config   syscall: 'open',
+11 verbose config   path: 'C:\\Users\\rudra\\.npmrc'
+11 verbose config }
+12 timing config:load:file:C:\Users\rudra\.npmrc Completed in 2ms
+13 timing config:load:user Completed in 3ms
+14 timing config:load:file:C:\Program Files\Microsoft Visual Studio\2022\Professional\MSBuild\Microsoft\VisualStudio\NodeJs\etc\npmrc Completed in 0ms
+15 timing config:load:global Completed in 0ms
+16 timing config:load:setEnvs Completed in 1ms
+17 timing config:load Completed in 9ms
+18 timing npm:load:configload Completed in 9ms
+19 timing config:load:flatten Completed in 2ms
+20 timing npm:load:mkdirpcache Completed in 0ms
+21 timing npm:load:mkdirplogs Completed in 1ms
+22 verbose title npm install axios
+23 verbose argv "install" "axios" "--no-audit" "--no-fund" "--cache" ".\\tmp_cache"
+24 timing npm:load:setTitle Completed in 1ms
+25 timing npm:load:display Completed in 0ms
+26 verbose logfile logs-max:10 dir:C:\AI Emergency Route Optimizer for Indian Cities\frontend\tmp_cache\_logs\2026-09-08T18_16_42_220Z-
+27 verbose logfile C:\AI Emergency Route Optimizer for Indian Cities\frontend\tmp_cache\_logs\2026-09-08T18_16_42_220Z-debug-0.log
+28 timing npm:load:logFile Completed in 4ms
+29 timing npm:load:timers Completed in 1ms
+30 timing npm:load:configScope Completed in 0ms
+31 timing npm:load Completed in 33ms
+32 timing arborist:ctor Completed in 0ms
+33 silly logfile done cleaning log files
+34 timing idealTree:init Completed in 50ms
+35 timing idealTree:userRequests Completed in 1ms
+36 silly idealTree buildDeps
+37 silly fetch manifest axios@*
+38 verbose shrinkwrap failed to load node_modules/.package-lock.json out of date, updated: node_modules

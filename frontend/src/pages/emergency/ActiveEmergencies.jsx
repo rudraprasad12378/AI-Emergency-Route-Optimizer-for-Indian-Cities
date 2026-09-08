@@ -1,11 +1,12 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Plus, Filter, Siren } from 'lucide-react';
+import { Plus, Filter, Siren, AlertCircle } from 'lucide-react';
 import { useEmergency } from '../../hooks/useEmergency';
 import { PageContainer } from '../../components/layout/PageContainer';
 import { EmergencyCard } from '../../components/emergency/EmergencyCard';
 import { Select } from '../../components/ui/Select';
 import { Button } from '../../components/ui/Button';
+import { EmptyState } from '../../components/ui/EmptyState';
 
 export const ActiveEmergencies = () => {
   const navigate = useNavigate();
@@ -30,10 +31,10 @@ export const ActiveEmergencies = () => {
             onChange={(e) => setFilterStatus(e.target.value)}
             options={[
               { label: 'All Statuses', value: 'all' },
-              { label: 'Assigned', value: 'assigned' },
-              { label: 'Dispatched', value: 'dispatched' },
-              { label: 'In Progress', value: 'in_progress' },
-              { label: 'Completed', value: 'completed' },
+              { label: 'Requested', value: 'REQUESTED' },
+              { label: 'Assigned', value: 'ASSIGNED' },
+              { label: 'En Route', value: 'EN_ROUTE' },
+              { label: 'Completed', value: 'COMPLETED' },
             ]}
           />
         </div>
@@ -50,18 +51,41 @@ export const ActiveEmergencies = () => {
             ]}
           />
         </div>
+
+        {(filterStatus !== 'all' || filterSeverity !== 'all') && (
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => {
+              setFilterStatus('all');
+              setFilterSeverity('all');
+            }}
+          >
+            Reset Filters
+          </Button>
+        )}
       </div>
 
-      {/* Grid of Emergencies */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-        {emergencies.map((emg) => (
-          <EmergencyCard
-            key={emg.id}
-            emergency={emg}
-            onClick={() => navigate(`/emergencies/${emg.id}`)}
-          />
-        ))}
-      </div>
+      {/* Grid of Emergencies or Empty State */}
+      {emergencies.length === 0 ? (
+        <EmptyState
+          icon={Siren}
+          title="No Matching Emergency Incidents Found"
+          description="There are currently no active emergency response missions matching the selected filters."
+          actionLabel="Dispatch New Unit"
+          onAction={() => navigate('/emergencies/new')}
+        />
+      ) : (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          {emergencies.map((emg) => (
+            <EmergencyCard
+              key={emg.id}
+              emergency={emg}
+              onClick={() => navigate(`/emergencies/${emg.id}`)}
+            />
+          ))}
+        </div>
+      )}
     </PageContainer>
   );
 };

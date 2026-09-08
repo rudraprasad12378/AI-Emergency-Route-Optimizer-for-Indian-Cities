@@ -12,13 +12,15 @@ import {
   Settings,
   Shield,
   LogOut,
+  HeartHandshake,
+  Hospital,
   ChevronRight,
 } from 'lucide-react';
 import { useAuth } from '../../hooks/useAuth';
 import { useNotifications } from '../../hooks/useNotifications';
 
 export const Sidebar = ({ collapsed = false }) => {
-  const { user, logout } = useAuth();
+  const { user, logout, role, switchRole } = useAuth();
   const { unreadCount } = useNotifications();
   const navigate = useNavigate();
 
@@ -32,6 +34,12 @@ export const Sidebar = ({ collapsed = false }) => {
     { label: 'AI Predictions', path: '/predictions', icon: TrendingUp },
     { label: 'Analytics', path: '/analytics', icon: TrendingUp },
     { label: 'Notifications', path: '/notifications', icon: Bell, badge: unreadCount },
+  ];
+
+  const roleHubs = [
+    { label: 'Driver Interface', path: '/driver', icon: Truck, roleId: 'driver' },
+    { label: 'Citizen 108 Portal', path: '/citizen', icon: HeartHandshake, roleId: 'citizen' },
+    { label: 'Hospital Trauma Bay', path: '/hospital', icon: Hospital, roleId: 'hospital' },
   ];
 
   const adminItems = [
@@ -68,7 +76,7 @@ export const Sidebar = ({ collapsed = false }) => {
         <div>
           {!collapsed && (
             <p className="px-3 text-[10px] font-bold uppercase tracking-widest text-slate-500 mb-2">
-              Operations
+              Dispatcher Command
             </p>
           )}
           <nav className="space-y-1">
@@ -93,6 +101,37 @@ export const Sidebar = ({ collapsed = false }) => {
                       {item.badge}
                     </span>
                   ) : null}
+                </NavLink>
+              );
+            })}
+          </nav>
+        </div>
+
+        {/* Specialized Role Portals */}
+        <div>
+          {!collapsed && (
+            <p className="px-3 text-[10px] font-bold uppercase tracking-widest text-slate-500 mb-2">
+              Role Workspaces
+            </p>
+          )}
+          <nav className="space-y-1">
+            {roleHubs.map((item) => {
+              const Icon = item.icon;
+              return (
+                <NavLink
+                  key={item.path}
+                  to={item.path}
+                  onClick={() => switchRole(item.roleId)}
+                  className={({ isActive }) => `
+                    flex items-center gap-3 rounded-xl px-3 py-2.5 text-xs font-semibold transition-all duration-200 group
+                    ${isActive
+                      ? 'bg-primary-600/15 text-primary-400 border border-primary-500/30 shadow-sm'
+                      : 'text-slate-400 hover:bg-slate-900 hover:text-slate-200'
+                    }
+                  `}
+                >
+                  <Icon className="h-4 w-4 shrink-0 transition-transform group-hover:scale-110 text-primary-400" />
+                  {!collapsed && <span className="flex-1">{item.label}</span>}
                 </NavLink>
               );
             })}
@@ -133,13 +172,15 @@ export const Sidebar = ({ collapsed = false }) => {
       <div className="border-t border-slate-800/80 p-3 bg-slate-950/60">
         <div className="flex items-center justify-between gap-2 rounded-xl p-2 bg-slate-900/60 border border-slate-800">
           <div className="flex items-center gap-2.5 min-w-0">
-            <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-primary-600 text-xs font-bold text-white">
-              {user?.name ? user.name.slice(0, 2).toUpperCase() : 'OP'}
+            <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-primary-600 text-xs font-bold text-white uppercase">
+              {user?.avatar || (user?.name ? user.name.slice(0, 2).toUpperCase() : 'OP')}
             </div>
             {!collapsed && (
               <div className="min-w-0">
                 <p className="text-xs font-semibold text-slate-200 truncate">{user?.name || 'Dispatcher'}</p>
-                <p className="text-[10px] text-slate-400 uppercase tracking-wider truncate">{user?.role || 'Operator'}</p>
+                <p className="text-[10px] text-primary-400 uppercase tracking-wider font-bold truncate">
+                  Role: {user?.role || 'Dispatcher'}
+                </p>
               </div>
             )}
           </div>
@@ -149,7 +190,7 @@ export const Sidebar = ({ collapsed = false }) => {
                 logout();
                 navigate('/login');
               }}
-              title="Sign Out"
+              title="Sign Out / Switch Role"
               className="p-1.5 text-slate-400 hover:text-red-400 hover:bg-slate-800 rounded-lg transition-colors"
             >
               <LogOut className="h-4 w-4" />

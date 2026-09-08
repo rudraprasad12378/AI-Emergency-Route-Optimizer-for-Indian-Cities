@@ -5,6 +5,8 @@ import { useVehicleTracking } from '../../hooks/useVehicleTracking';
 import { PageContainer } from '../../components/layout/PageContainer';
 import { VehicleCard } from '../../components/vehicles/VehicleCard';
 import { Select } from '../../components/ui/Select';
+import { Button } from '../../components/ui/Button';
+import { EmptyState } from '../../components/ui/EmptyState';
 
 export const Vehicles = () => {
   const navigate = useNavigate();
@@ -42,17 +44,43 @@ export const Vehicles = () => {
             ]}
           />
         </div>
+
+        {(filterType !== 'all' || filterStatus !== 'all') && (
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => {
+              setFilterType('all');
+              setFilterStatus('all');
+            }}
+          >
+            Reset Filters
+          </Button>
+        )}
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-        {vehicles.map((veh) => (
-          <VehicleCard
-            key={veh.id}
-            vehicle={veh}
-            onClick={() => navigate(`/vehicles/${veh.id}`)}
-          />
-        ))}
-      </div>
+      {vehicles.length === 0 ? (
+        <EmptyState
+          icon={Truck}
+          title="No Fleet Units Match Criteria"
+          description="All vehicles in this category are currently unassigned or offline."
+          actionLabel="View All Fleet Units"
+          onAction={() => {
+            setFilterType('all');
+            setFilterStatus('all');
+          }}
+        />
+      ) : (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          {vehicles.map((veh) => (
+            <VehicleCard
+              key={veh.id}
+              vehicle={veh}
+              onClick={() => navigate(`/vehicles/${veh.id}`)}
+            />
+          ))}
+        </div>
+      )}
     </PageContainer>
   );
 };

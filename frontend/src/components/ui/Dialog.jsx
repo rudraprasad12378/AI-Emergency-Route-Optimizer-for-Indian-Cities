@@ -13,10 +13,11 @@ export const Dialog = ({
   cancelLabel = 'Cancel',
   variant = 'primary',
   loading = false,
+  size = 'sm',
   children,
 }) => {
   return (
-    <Modal isOpen={isOpen} onClose={onClose} title={title} size="sm">
+    <Modal isOpen={isOpen} onClose={onClose} title={title} size={size}>
       <div className="space-y-4">
         {(description || message) && (
           <p className="text-xs text-slate-300 leading-relaxed">{description || message}</p>

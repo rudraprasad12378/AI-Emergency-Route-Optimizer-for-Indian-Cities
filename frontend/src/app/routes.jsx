@@ -8,8 +8,13 @@ import { AppLayout } from '../components/layout/AppLayout';
 import { Login } from '../pages/auth/Login';
 import { Register } from '../pages/auth/Register';
 
-// Dashboard / Control Center
+// Dashboard / Control Center (Dispatcher)
 import { ControlCenter } from '../pages/dashboard/ControlCenter';
+
+// Role Features
+import { DriverDashboard } from '../features/driver/DriverDashboard';
+import { CitizenDashboard } from '../features/citizen/CitizenDashboard';
+import { HospitalDashboard } from '../features/hospital/HospitalDashboard';
 
 // Emergencies
 import { ActiveEmergencies } from '../pages/emergency/ActiveEmergencies';
@@ -62,12 +67,39 @@ export const router = createBrowserRouter([
     path: '/register',
     element: <Register />,
   },
+  // Standalone Specialized Role Views (Optimized for Mobile / Large Touch HUDs)
+  {
+    path: '/driver',
+    children: [
+      { index: true, element: <DriverDashboard /> },
+      { path: 'emergency/:id', element: <DriverDashboard /> },
+    ],
+  },
+  {
+    path: '/citizen',
+    children: [
+      { index: true, element: <CitizenDashboard /> },
+      { path: 'request-emergency', element: <CitizenDashboard /> },
+    ],
+  },
+  {
+    path: '/hospital',
+    children: [
+      { index: true, element: <HospitalDashboard /> },
+      { path: 'incoming', element: <HospitalDashboard /> },
+    ],
+  },
+  // Main Tactical App Shell (Dispatcher & Administrative Workspace)
   {
     path: '/',
     element: <AppLayout />,
     children: [
       {
         index: true,
+        element: <ControlCenter />,
+      },
+      {
+        path: 'control-center',
         element: <ControlCenter />,
       },
       {

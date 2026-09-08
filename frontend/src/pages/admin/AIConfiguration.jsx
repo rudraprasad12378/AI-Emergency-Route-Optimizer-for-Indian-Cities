@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { PageContainer } from '../../components/layout/PageContainer';
 import { Card } from '../../components/ui/Card';
 import { Button } from '../../components/ui/Button';
-import { BrainCircuit, Save, Sparkles } from 'lucide-react';
+import { BrainCircuit, Save, CheckCircle2 } from 'lucide-react';
 
 export const AIConfiguration = () => {
   const [config, setConfig] = useState({
@@ -12,19 +12,32 @@ export const AIConfiguration = () => {
     vipAvoidanceMultiplier: 2.5,
     greenCorridorAutoTrigger: true,
   });
+  const [saved, setSaved] = useState(false);
+
+  const handleSave = () => {
+    setSaved(true);
+    setTimeout(() => setSaved(false), 2500);
+  };
 
   return (
     <PageContainer
       title="AI Optimization Engine Parameters"
       subtitle="Tune routing heuristics, hazard penalty penalties, and signal preemption sensitivity"
       actions={
-        <Button size="sm" variant="primary">
+        <Button size="sm" variant="primary" onClick={handleSave}>
           <Save className="h-4 w-4 mr-1.5" />
           Save AI Weights
         </Button>
       }
     >
       <div className="max-w-2xl space-y-4">
+        {saved && (
+          <div className="flex items-center gap-2 rounded-xl bg-emerald-950/60 border border-emerald-500/40 p-3 text-xs text-emerald-300 font-bold">
+            <CheckCircle2 className="h-4 w-4 text-emerald-400" />
+            <span>AI Model weights successfully updated across active routing nodes.</span>
+          </div>
+        )}
+
         <Card className="p-6 bg-slate-900/90 border-slate-800 space-y-4">
           <div className="flex items-center gap-2 text-indigo-400 font-bold text-xs uppercase tracking-wider">
             <BrainCircuit className="h-4 w-4" />

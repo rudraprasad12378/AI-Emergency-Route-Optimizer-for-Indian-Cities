@@ -6,6 +6,7 @@ import { PageContainer } from '../../components/layout/PageContainer';
 import { IncidentCard } from '../../components/incidents/IncidentCard';
 import { Select } from '../../components/ui/Select';
 import { Button } from '../../components/ui/Button';
+import { EmptyState } from '../../components/ui/EmptyState';
 
 export const Incidents = () => {
   const navigate = useNavigate();
@@ -49,17 +50,40 @@ export const Incidents = () => {
             ]}
           />
         </div>
+
+        {(filterType !== 'all' || filterSeverity !== 'all') && (
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => {
+              setFilterType('all');
+              setFilterSeverity('all');
+            }}
+          >
+            Reset Filters
+          </Button>
+        )}
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-        {incidents.map((inc) => (
-          <IncidentCard
-            key={inc.id}
-            incident={inc}
-            onClick={() => navigate(`/incidents/${inc.id}`)}
-          />
-        ))}
-      </div>
+      {incidents.length === 0 ? (
+        <EmptyState
+          icon={AlertTriangle}
+          title="No Active Road Hazards Found"
+          description="Corridors are clear of logged hazards for the selected category."
+          actionLabel="Report Hazard Alert"
+          onAction={() => navigate('/incidents/new')}
+        />
+      ) : (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          {incidents.map((inc) => (
+            <IncidentCard
+              key={inc.id}
+              incident={inc}
+              onClick={() => navigate(`/incidents/${inc.id}`)}
+            />
+          ))}
+        </div>
+      )}
     </PageContainer>
   );
 };

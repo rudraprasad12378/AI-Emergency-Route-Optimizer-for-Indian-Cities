@@ -78,10 +78,12 @@
     box-shadow: 0 0 0 1px rgba(34, 197, 94, 0.3), 0 0 20px rgba(34, 197, 94, 0.15);
   }
 
-  /* Leaflet overrides for dark theme */
+  /* Leaflet overrides for dark theme & stacking isolation */
   .leaflet-container {
     background: #161923;
     font-family: 'Inter', system-ui, sans-serif;
+    isolation: isolate;
+    z-index: 0;
   }
 
   .leaflet-control-zoom a {

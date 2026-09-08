@@ -5,6 +5,8 @@ import { StationCard } from '../../components/stations/StationCard';
 import { StationDetails } from '../../components/stations/StationDetails';
 import { StationFilters } from '../../components/stations/StationFilters';
 import { CityMap } from '../../components/map/CityMap';
+import { EmptyState } from '../../components/ui/EmptyState';
+import { Building2 } from 'lucide-react';
 
 export const Stations = () => {
   const [filterType, setFilterType] = useState('all');
@@ -26,16 +28,26 @@ export const Stations = () => {
 
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
         <div className="lg:col-span-5 space-y-4">
-          <div className="space-y-3">
-            {filteredStations.map((station) => (
-              <StationCard
-                key={station.id}
-                station={station}
-                isSelected={station.id === selectedStation?.id}
-                onClick={() => setSelectedStation(station)}
-              />
-            ))}
-          </div>
+          {filteredStations.length === 0 ? (
+            <EmptyState
+              icon={Building2}
+              title="No Stations in Category"
+              description="No emergency facilities registered under this category."
+              actionLabel="Show All Hubs"
+              onAction={() => setFilterType('all')}
+            />
+          ) : (
+            <div className="space-y-3">
+              {filteredStations.map((station) => (
+                <StationCard
+                  key={station.id}
+                  station={station}
+                  isSelected={station.id === selectedStation?.id}
+                  onClick={() => setSelectedStation(station)}
+                />
+              ))}
+            </div>
+          )}
 
           {selectedStation && <StationDetails station={selectedStation} />}
         </div>
