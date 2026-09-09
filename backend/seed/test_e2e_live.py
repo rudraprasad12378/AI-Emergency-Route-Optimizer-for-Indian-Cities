@@ -85,8 +85,13 @@ def run_e2e():
         avail_res = client.get("/vehicles/available?type=AMBULANCE", headers=disp_headers)
         assert avail_res.status_code == 200
         available_vehicles = avail_res.json()
+        if len(available_vehicles) == 0:
+            all_veh = client.get("/vehicles", headers=disp_headers).json().get("items", [])
+            for v in all_veh:
+                client.patch(f"/vehicles/{v['id']}", headers=disp_headers, json={"status": "AVAILABLE"})
+            available_vehicles = client.get("/vehicles/available?type=AMBULANCE", headers=disp_headers).json()
         assert len(available_vehicles) > 0, "No available ambulances found"
-        assigned_veh = next((v for v in available_vehicles if v["vehicle_number"] == "OD-02-AX-1081"), available_vehicles[0])
+        assigned_veh = next((v for v in available_vehicles if "ALS-Alpha-101" in v.get("call_sign", "")), available_vehicles[0])
         veh_id = assigned_veh["id"]
         print(f"[PASS] 7. Found available unit: {assigned_veh['call_sign']} ({assigned_veh['vehicle_number']})")
 
@@ -125,10 +130,11 @@ def run_e2e():
         print("[PASS] 9. Transactional lock successfully prevented double-assignment (HTTP 409)")
 
         # 9. Driver login (driver assigned to this unit)
-        driver_email = "driver@ero.gov.in" if assigned_veh.get("driver_id") else "driver@ero.gov.in"
+        driver_email = "driver@ero.gov.in"
         driver_login = client.post("/auth/login", json={"email": driver_email, "password": "emergency2026"})
         assert driver_login.status_code == 200
         driver_token = driver_login.json()["access_token"]
+        pilot_id = driver_login.json()["user"]["id"]
         driver_headers = {"Authorization": f"Bearer {driver_token}"}
         print("[PASS] 10. Ambulance Pilot authenticated")
 
@@ -144,10 +150,10 @@ def run_e2e():
         assert start_res.json()["status"] == "EN_ROUTE"
         print("[PASS] 12. Unit en route (status: EN_ROUTE)")
 
-        # 12. Driver sends GPS telemetry
+        # 12. Driver sends GPS telemetry (or Dispatcher for general fleet)
         loc_res = client.post(
             f"/vehicles/{veh_id}/location",
-            headers=driver_headers,
+            headers=driver_headers if assigned_veh.get("driver_id") == pilot_id else disp_headers,
             json={"latitude": 20.3200, "longitude": 85.8200, "speed_kmh": 58.5, "heading_deg": 210.0}
         )
         assert loc_res.status_code == 200

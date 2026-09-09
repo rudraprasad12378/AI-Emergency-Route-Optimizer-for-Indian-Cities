@@ -1,29 +1,22 @@
 import { apiClient } from './api';
-import { mockNotifications } from '../mock/notifications';
 
 export const notificationService = {
   getNotifications: async (unreadOnly = false) => {
-    const res = await apiClient.get('/notifications', { unread_only: unreadOnly }, {
-      mockData: { items: mockNotifications, total: mockNotifications.length },
-    });
+    const res = await apiClient.get('/notifications', { unread_only: unreadOnly });
     const data = res.data;
     if (data && Array.isArray(data.items)) {
       return data.items;
     }
-    return Array.isArray(data) ? data : mockNotifications;
+    return Array.isArray(data) ? data : [];
   },
 
   markAsRead: async (id) => {
-    const res = await apiClient.post(`/notifications/${id}/read`, {}, {
-      mockData: { id, is_read: true, read_at: new Date().toISOString() },
-    });
+    const res = await apiClient.post(`/notifications/${id}/read`, {});
     return res.data;
   },
 
   markAllAsRead: async () => {
-    const res = await apiClient.post('/notifications/read-all', {}, {
-      mockData: { success: true },
-    });
+    const res = await apiClient.post('/notifications/read-all', {});
     return res.data;
   },
 };

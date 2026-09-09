@@ -1,29 +1,23 @@
 import { apiClient } from './api';
-import { mockIncidents } from '../mock/incidents';
 
 export const incidentService = {
   getIncidents: async (filters = {}) => {
-    const res = await apiClient.get('/incidents', filters, {
-      mockData: { items: mockIncidents, total: mockIncidents.length },
-    });
+    const res = await apiClient.get('/incidents', filters);
     const data = res.data;
     if (data && Array.isArray(data.items)) {
       return data.items;
     }
-    return Array.isArray(data) ? data : mockIncidents;
+    return Array.isArray(data) ? data : [];
   },
 
   getActiveIncidents: async () => {
-    const res = await apiClient.get('/incidents/active', {}, {
-      mockData: mockIncidents.filter((i) => i.status === 'ACTIVE' || i.status === 'active'),
-    });
-    return Array.isArray(res.data) ? res.data : mockIncidents;
+    const res = await apiClient.get('/incidents/active');
+    return Array.isArray(res.data) ? res.data : [];
   },
 
   getIncidentById: async (id) => {
-    const fallback = mockIncidents.find((i) => i.id === id) || mockIncidents[0];
-    const res = await apiClient.get(`/incidents/${id}`, {}, { mockData: fallback });
-    return res.data || fallback;
+    const res = await apiClient.get(`/incidents/${id}`);
+    return res.data;
   },
 
   reportIncident: async (incidentData) => {
@@ -31,23 +25,19 @@ export const incidentService = {
       title: incidentData.title || 'Road Hazard',
       type: (incidentData.type || 'ROAD_BLOCKAGE').toUpperCase(),
       severity: (incidentData.severity || 'HIGH').toUpperCase(),
-      latitude: incidentData.latitude ?? incidentData.lat ?? 20.2961,
-      longitude: incidentData.longitude ?? incidentData.lng ?? 85.8245,
+      latitude: Number(incidentData.latitude ?? incidentData.lat ?? 20.2961),
+      longitude: Number(incidentData.longitude ?? incidentData.lng ?? 85.8245),
       address: incidentData.address || incidentData.locationName || 'Bhubaneswar Corridor',
       description: incidentData.description || 'Reported hazard',
-      delay_minutes: incidentData.delay_minutes || incidentData.delayMinutes || 5,
-      radius_meters: incidentData.radius_meters || 300,
+      delay_minutes: Number(incidentData.delay_minutes || incidentData.delayMinutes || 5),
+      radius_meters: Number(incidentData.radius_meters || 300),
     };
-    const res = await apiClient.post('/incidents', payload, {
-      mockData: { id: `inc-${Date.now().toString().slice(-4)}`, status: 'ACTIVE', ...payload },
-    });
+    const res = await apiClient.post('/incidents', payload);
     return res.data;
   },
 
   resolveIncident: async (id, notes = 'Cleared by traffic personnel') => {
-    const res = await apiClient.post(`/incidents/${id}/resolve`, { notes }, {
-      mockData: { id, status: 'RESOLVED', resolved_at: new Date().toISOString() },
-    });
+    const res = await apiClient.post(`/incidents/${id}/resolve`, { notes });
     return res.data;
   },
 };

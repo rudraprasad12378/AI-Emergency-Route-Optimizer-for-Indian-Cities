@@ -10,6 +10,8 @@ from app.api.v1.hospitals import router as hospitals_router
 from app.api.v1.notifications import router as notifications_router
 from app.api.v1.admin import router as admin_router
 from app.api.v1.health import router as health_router
+from app.api.v1.stations import router as stations_router
+from app.api.v1.analytics import router as analytics_router
 
 api_v1_router = APIRouter()
 
@@ -22,5 +24,7 @@ api_v1_router.include_router(vehicles_router)
 api_v1_router.include_router(incidents_router)
 api_v1_router.include_router(routes_router)
 api_v1_router.include_router(hospitals_router)
+api_v1_router.include_router(stations_router)
 api_v1_router.include_router(notifications_router)
 api_v1_router.include_router(admin_router)
+api_v1_router.include_router(analytics_router)

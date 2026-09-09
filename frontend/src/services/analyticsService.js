@@ -1,24 +1,19 @@
 import { apiClient } from './api';
-import { mockAnalytics } from '../mock/analytics';
 
 export const analyticsService = {
   getAnalyticsOverview: async () => {
-    const res = await apiClient.get('/analytics/overview', {}, { mockData: mockAnalytics });
-    return res.data || mockAnalytics;
+    const res = await apiClient.get('/analytics/overview');
+    return res.data;
   },
 
   getResponseTimeTrends: async (timeframe = '7d') => {
-    const res = await apiClient.get('/analytics/response-times', { timeframe }, {
-      mockData: mockAnalytics.responseTimeTrends,
-    });
-    return res.data || mockAnalytics.responseTimeTrends;
+    const res = await apiClient.get('/analytics/response-times', { timeframe });
+    return res.data;
   },
 
   getEmergencyBreakdown: async () => {
-    const res = await apiClient.get('/analytics/emergency-breakdown', {}, {
-      mockData: mockAnalytics.emergencyTypeBreakdown,
-    });
-    return res.data || mockAnalytics.emergencyTypeBreakdown;
+    const res = await apiClient.get('/analytics/emergency-breakdown');
+    return res.data;
   },
 };
 

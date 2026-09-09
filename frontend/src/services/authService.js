@@ -1,32 +1,30 @@
 import { apiClient } from './api';
-import { mockUsers } from '../mock/users';
 
 export const authService = {
   login: async (credentials) => {
-    const user = mockUsers.find((u) => u.email === credentials.email) || mockUsers[0];
-    const mockAuthResponse = {
-      user,
-      token: 'jwt-mock-token-odisha-108-operator',
-      expiresIn: 3600,
-    };
-    const res = await apiClient.post('/auth/login', credentials, { mockData: mockAuthResponse });
-    return res.data || mockAuthResponse;
-  },
-
-  getCurrentUser: async () => {
-    const res = await apiClient.get('/auth/me', {}, { mockData: mockUsers[0] });
-    return res.data || mockUsers[0];
-  },
-
-  logout: async () => {
-    const res = await apiClient.post('/auth/logout', {}, { mockData: { success: true } });
+    const res = await apiClient.post('/auth/login', {
+      email: credentials.email,
+      password: credentials.password,
+    });
     return res.data;
   },
 
+  getCurrentUser: async () => {
+    const res = await apiClient.get('/auth/me');
+    return res.data;
+  },
+
+  register: async (userData) => {
+    const res = await apiClient.post('/auth/register', userData);
+    return res.data;
+  },
+
+  logout: async () => {
+    return { success: true };
+  },
+
   updateProfile: async (profileData) => {
-    const res = await apiClient.put('/auth/profile', profileData, {
-      mockData: { ...mockUsers[0], ...profileData },
-    });
+    const res = await apiClient.put('/users/profile', profileData);
     return res.data;
   },
 };

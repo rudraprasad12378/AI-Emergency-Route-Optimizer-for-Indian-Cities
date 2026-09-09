@@ -148,8 +148,8 @@ class ApiClient {
         }
       }
 
-      // Fallback to mockData if network connection failed so user experience is not abruptly disrupted
-      if (options.mockData !== undefined) {
+      // Only fall back to mock data if there was a network connection error AND mockData was explicitly specified AND NOT an HTTP error response
+      if (options.mockData !== undefined && !err.response) {
         return {
           data: options.mockData,
           status: 200,

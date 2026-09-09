@@ -1,6 +1,5 @@
 import { create } from 'zustand';
 import { authService } from '../services/authService';
-import { mockUsers } from '../mock/users';
 
 const ROLE_CREDENTIALS = {
   dispatcher: { email: 'dispatcher@ero.gov.in', password: 'emergency2026' },
@@ -10,16 +9,29 @@ const ROLE_CREDENTIALS = {
   admin: { email: 'admin@ero.gov.in', password: 'emergency2026' },
 };
 
+const getStoredUser = () => {
+  try {
+    const raw = localStorage.getItem('auth_user');
+    if (raw) {
+      const parsed = JSON.parse(raw);
+      return parsed.user || null;
+    }
+  } catch {
+    return null;
+  }
+  return null;
+};
+
 export const useAuthStore = create((set, get) => ({
-  user: {
+  user: getStoredUser() || {
     id: 'usr-dispatcher-01',
     name: 'Dispatcher Officer Priya Nayak',
     email: 'dispatcher@ero.gov.in',
     role: 'dispatcher',
     department: 'Odisha 108 Command Center',
   },
-  token: localStorage.getItem('auth_token') || 'jwt-initial-token',
-  isAuthenticated: true,
+  token: localStorage.getItem('auth_token') || null,
+  isAuthenticated: Boolean(localStorage.getItem('auth_token')),
   isLoading: false,
   error: null,
 
@@ -28,7 +40,7 @@ export const useAuthStore = create((set, get) => ({
     try {
       const data = await authService.login({ email, password });
       const rawUser = data.user || data;
-      const token = data.access_token || data.token || `jwt-${Date.now()}`;
+      const token = data.access_token || data.token;
       
       const normalizedRole = (rawUser.role || 'dispatcher').toLowerCase();
       const userObj = {
@@ -36,7 +48,9 @@ export const useAuthStore = create((set, get) => ({
         role: normalizedRole,
       };
 
-      localStorage.setItem('auth_token', token);
+      if (token) {
+        localStorage.setItem('auth_token', token);
+      }
       localStorage.setItem('auth_user', JSON.stringify({ token, user: userObj }));
 
       set({
@@ -54,38 +68,34 @@ export const useAuthStore = create((set, get) => ({
     }
   },
 
+  fetchCurrentUser: async () => {
+    try {
+      const rawUser = await authService.getCurrentUser();
+      const normalizedRole = (rawUser.role || 'dispatcher').toLowerCase();
+      const userObj = { ...rawUser, role: normalizedRole };
+      set({ user: userObj, isAuthenticated: true });
+      return userObj;
+    } catch {
+      return null;
+    }
+  },
+
   switchRole: async (role) => {
     const roleKey = role.toLowerCase();
     const creds = ROLE_CREDENTIALS[roleKey] || { email: `${roleKey}@ero.gov.in`, password: 'emergency2026' };
     
-    // Attempt real live login for selected role
-    try {
-      const res = await get().login(creds.email, creds.password);
-      if (res.success) return res.user;
-    } catch (e) {
-      // Fallback
+    // Authenticate with real credentials against backend
+    const res = await get().login(creds.email, creds.password);
+    if (res.success) {
+      return res.user;
     }
-
-    const fallbackUser = mockUsers.find((u) => u.role === roleKey) || {
-      id: `usr-${roleKey}`,
-      name: `${roleKey.toUpperCase()} Officer`,
-      email: creds.email,
-      role: roleKey,
-      department: 'Emergency Response Command',
-    };
-
-    set({
-      user: fallbackUser,
-      token: `jwt-${roleKey}-token`,
-      isAuthenticated: true,
-    });
-    return fallbackUser;
+    return get().user;
   },
 
   logout: () => {
     localStorage.removeItem('auth_token');
     localStorage.removeItem('auth_user');
-    set({ user: null, token: null, isAuthenticated: false });
+    set({ user: null, token: null, isAuthenticated: false, error: null });
   },
 
   updateProfile: (updates) => {

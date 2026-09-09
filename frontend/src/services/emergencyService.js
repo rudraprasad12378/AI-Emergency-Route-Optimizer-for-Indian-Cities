@@ -1,20 +1,18 @@
 import { apiClient } from './api';
-import { mockEmergencies } from '../mock/emergencies';
 
 export const emergencyService = {
   getEmergencies: async (filters = {}) => {
-    const res = await apiClient.get('/emergencies', filters, { mockData: { items: mockEmergencies, total: mockEmergencies.length } });
+    const res = await apiClient.get('/emergencies', filters);
     const data = res.data;
     if (data && Array.isArray(data.items)) {
       return data.items;
     }
-    return Array.isArray(data) ? data : mockEmergencies;
+    return Array.isArray(data) ? data : [];
   },
 
   getEmergencyById: async (id) => {
-    const fallback = mockEmergencies.find((e) => e.id === id) || mockEmergencies[0];
-    const res = await apiClient.get(`/emergencies/${id}`, {}, { mockData: fallback });
-    return res.data || fallback;
+    const res = await apiClient.get(`/emergencies/${id}`);
+    return res.data;
   },
 
   createEmergency: async (data) => {
@@ -23,94 +21,66 @@ export const emergencyService = {
       priority: data.priority ? data.priority.toUpperCase() : (data.severity ? data.severity.toUpperCase() : 'CRITICAL'),
       pickup_address: data.pickup_address || data.pickupLocation?.address || 'Master Canteen Square, Bhubaneswar',
       pickup_landmark: data.pickup_landmark || data.pickupLocation?.landmark || 'Near Railway Station',
-      pickup_latitude: data.pickup_latitude || data.pickupLocation?.coordinates?.lat || 20.2648,
-      pickup_longitude: data.pickup_longitude || data.pickupLocation?.coordinates?.lng || 85.8402,
+      pickup_latitude: Number(data.pickup_latitude || data.pickupLocation?.coordinates?.lat || 20.2648),
+      pickup_longitude: Number(data.pickup_longitude || data.pickupLocation?.coordinates?.lng || 85.8402),
       destination_name: data.destination_name || data.destinationHospital?.name || 'AIIMS Bhubaneswar',
       destination_address: data.destination_address || data.destinationHospital?.address || 'Sijua, Patrapada',
-      destination_latitude: data.destination_latitude || data.destinationHospital?.coordinates?.lat || 20.2312,
-      destination_longitude: data.destination_longitude || data.destinationHospital?.coordinates?.lng || 85.7766,
+      destination_latitude: Number(data.destination_latitude || data.destinationHospital?.coordinates?.lat || 20.2312),
+      destination_longitude: Number(data.destination_longitude || data.destinationHospital?.coordinates?.lng || 85.7766),
       description: data.description || 'Emergency SOS call',
-      patient_count: data.patient_count || 1,
+      patient_count: Number(data.patient_count || 1),
       caller_name: data.caller_name || 'Citizen Caller',
       caller_phone: data.caller_phone || '+91 108',
+      destination_hospital_id: data.destination_hospital_id || null,
     };
 
-    const res = await apiClient.post('/emergencies', payload, {
-      mockData: {
-        ...payload,
-        id: `emg-${Date.now().toString().slice(-4)}`,
-        emergency_number: `EMG-2026-${Math.floor(1000 + Math.random() * 9000)}`,
-        status: 'REQUESTED',
-        created_at: new Date().toISOString(),
-      },
-    });
+    const res = await apiClient.post('/emergencies', payload);
     return res.data;
   },
 
   triageEmergency: async (emergencyId, triageData) => {
     const payload = {
       priority: triageData.priority ? triageData.priority.toUpperCase() : 'CRITICAL',
-      notes: triageData.notes || triageData.triageNotes || 'Triage completed',
+      destination_hospital_id: triageData.destination_hospital_id || triageData.destinationHospitalId || null,
     };
-    const res = await apiClient.post(`/emergencies/${emergencyId}/triage`, payload, {
-      mockData: { id: emergencyId, status: 'TRIAGED', ...payload },
-    });
+    const res = await apiClient.post(`/emergencies/${emergencyId}/triage`, payload);
     return res.data;
   },
 
-  assignVehicle: async (emergencyId, vehicleId, instructions = '') => {
+  assignVehicle: async (emergencyId, vehicleId) => {
     const res = await apiClient.post(`/emergencies/${emergencyId}/assign`, {
       vehicle_id: vehicleId,
-      instructions,
-    }, {
-      mockData: { id: emergencyId, assigned_vehicle_id: vehicleId, status: 'ASSIGNED' },
     });
     return res.data;
   },
 
   acceptEmergency: async (emergencyId) => {
-    const res = await apiClient.post(`/emergencies/${emergencyId}/accept`, {}, {
-      mockData: { id: emergencyId, status: 'ACCEPTED' },
-    });
+    const res = await apiClient.post(`/emergencies/${emergencyId}/accept`, {});
     return res.data;
   },
 
   startEmergency: async (emergencyId) => {
-    const res = await apiClient.post(`/emergencies/${emergencyId}/start`, {}, {
-      mockData: { id: emergencyId, status: 'EN_ROUTE' },
-    });
+    const res = await apiClient.post(`/emergencies/${emergencyId}/start`, {});
     return res.data;
   },
 
   arriveAtScene: async (emergencyId) => {
-    const res = await apiClient.post(`/emergencies/${emergencyId}/arrive`, {}, {
-      mockData: { id: emergencyId, status: 'ARRIVED' },
-    });
+    const res = await apiClient.post(`/emergencies/${emergencyId}/arrive`, {});
     return res.data;
   },
 
-  completeEmergency: async (emergencyId, handoverNotes = '') => {
-    const res = await apiClient.post(`/emergencies/${emergencyId}/complete`, {
-      handover_notes: handoverNotes,
-    }, {
-      mockData: { id: emergencyId, status: 'COMPLETED' },
-    });
+  completeEmergency: async (emergencyId) => {
+    const res = await apiClient.post(`/emergencies/${emergencyId}/complete`, {});
     return res.data;
   },
 
   cancelEmergency: async (emergencyId, reason = 'Cancelled by dispatch') => {
-    const res = await apiClient.post(`/emergencies/${emergencyId}/cancel`, {
-      reason,
-    }, {
-      mockData: { id: emergencyId, status: 'CANCELLED' },
-    });
+    const res = await apiClient.post(`/emergencies/${emergencyId}/cancel?reason=${encodeURIComponent(reason)}`, {});
     return res.data;
   },
 
-  toggleGreenCorridor: async (emergencyId, active) => {
-    const res = await apiClient.post(`/emergencies/${emergencyId}/green-corridor`, { active }, {
-      mockData: { id: emergencyId, green_corridor_active: active },
-    });
+  toggleGreenCorridor: async (emergencyId, active = true) => {
+    const res = await apiClient.post(`/emergencies/${emergencyId}/green-corridor?active=${active}`, {});
     return res.data;
   },
 };
